@@ -58,6 +58,8 @@ pipeline {
                 expression { params.buildstep == 'Docker' }
             }
             steps {
+                sh 'sudo usermod -aG docker $USER'
+                sh 'newgrp docker'
                 sh 'docker build -t petclinic:1.0 .'
                 sh 'docker images'
             }
