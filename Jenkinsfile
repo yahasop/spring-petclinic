@@ -60,8 +60,8 @@ pipeline {
             steps {
                 sh 'sudo usermod -aG docker jenkins'
                 sh 'newgrp docker'
-                sh 'docker build -t petclinic:1.0 .'
-                sh 'docker images'
+                sh 'sudo docker build -t petclinic:1.0 .'
+                sh 'sudo docker images'
             }
         }
 
@@ -70,7 +70,7 @@ pipeline {
                 expression { params.buildstep == 'Docker' }
             }
             steps {
-                sh 'docker run -d --name petclinic -p 8080:8080 petclinic:${env.BUILD_NUMBER}.0'
+                sh 'sudo docker run -d --name petclinic -p 8080:8080 petclinic:1.0'
             }
         }
     }
