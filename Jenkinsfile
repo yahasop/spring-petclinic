@@ -41,7 +41,7 @@ pipeline {
 
         stage('Dockerizing') {
             steps {
-                sh 'docker build -t petclinic:${env.BUILD_NUMBER}.0 .'
+                sh 'docker build -t petclinic:1.0 .'
                 sh 'docker images'
             }
         }
