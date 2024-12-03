@@ -31,9 +31,24 @@ pipeline {
             }
         }
         
+        /*
         stage('Archiving artifacts') {
             steps {
                 archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
+            }
+        }
+        */
+
+        stage('Dockerizing') {
+            steps {
+                sh 'docker build -t petclinic:${env.BUILD_NUMBER}.0 .'
+                sh 'docker images'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker run -d --name petclinic -p 8080:8080 petclinic:${env.BUILD_NUMBER}.0'
             }
         }
     }
