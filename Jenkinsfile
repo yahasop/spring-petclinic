@@ -19,8 +19,6 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID') //Uses the credentials as value of the variable
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY') //Uses the credentials as value of the variable
         AWS_DEFAULT_REGION = "us-east-1" //Allows to define the default AWS region if in the TF config is not declared
-        ECR_URL="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d \'/\' -f 1)"
-        ECR_NAME=$(aws ecr describe-repositories | jq -r ".repositories[0].repositoryName")
     }
 
     stages {
@@ -60,6 +58,8 @@ pipeline {
             }
         }
         */
+
+        /*
         stage('Get ECRConfig') {
             when {
                 expression { params.buildstep == 'Docker' }
@@ -67,11 +67,12 @@ pipeline {
             steps {
                 sh '''
                     echo $ECR_URL
-                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URL
+                    
                 '''
             }
         }
-                
+        */
+
         stage('Dockerizing') {
             when {
                 expression { params.buildstep == 'Docker' }
@@ -80,10 +81,13 @@ pipeline {
                 sh 'sudo usermod -aG docker jenkins'
                 sh 'newgrp docker'
                 sh '''
-                sudo docker build -t $ECR_NAME .
-                sudo docker images
-                sudo docker tag $ECR_NAME:latest $ECR_URL/$ECR_NAME:latest
-                sudo docker push $ECR_URL/$ECR_NAME:latest
+                    ECR_URL="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d \'/\' -f 1)"
+                    ECR_NAME="$(aws ecr describe-repositories | jq -r ".repositories[0].repositoryName")"
+                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URL
+                    sudo docker build -t $ECR_NAME .
+                    sudo docker images
+                    sudo docker tag $ECR_NAME:latest $ECR_URL/$ECR_NAME:latest
+                    sudo docker push $ECR_URL/$ECR_NAME:latest
                 '''
             }
         }
