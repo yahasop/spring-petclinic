@@ -6,11 +6,11 @@ pipeline {
     tools {
         maven 'maven-jenkins'
     }
-    
+    /*
     triggers {
         githubPush()
     }
-
+    */
     parameters {
         choice choices: ['Maven', 'Docker'], description: 'Build step to run', name: 'buildstep'
     }
