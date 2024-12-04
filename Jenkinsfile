@@ -63,7 +63,6 @@ pipeline {
                 expression { params.buildstep == 'Docker' }
             }
             steps {
-                sh 'sudo apt install jq -y'
                 sh '''
                     ECR_URL="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d \'/\' -f 1)"
                     echo $ECR_URL
