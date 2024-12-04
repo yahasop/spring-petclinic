@@ -52,7 +52,18 @@ pipeline {
             }
         }
         */
+        stage('Get ECRConfig') {
+            when {
+                expression { params.buildstep == 'Docker' }
+            }
+            steps {
+                sh 'ECR_URL=$(aws ecr describe-repositories | jq -r ".repositories[0].repositoryUri" | cut -d \'/\' -f 1)'
+                sh 'echo $ECR_URL'
+                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URL'
 
+            }
+        }
+                
         stage('Dockerizing') {
             when {
                 expression { params.buildstep == 'Docker' }
@@ -60,8 +71,12 @@ pipeline {
             steps {
                 sh 'sudo usermod -aG docker jenkins'
                 sh 'newgrp docker'
-                sh 'sudo docker build -t petclinic:1.0 .'
+                sh 'ECR_NAME=$(aws ecr describe-repositories | jq -r ".repositories[0].repositoryName")'
+                sh 'sudo docker build -t $ECR_NAME .'
                 sh 'sudo docker images'
+                sh 'sudo docker tag $ECR_NAME:latest $ECR_URL/$ECR_NAME:latest'
+                sh 'sudo docker push $ECR_URL/$ECR_NAME:latest'
+
             }
         }
 
@@ -70,7 +85,7 @@ pipeline {
                 expression { params.buildstep == 'Docker' }
             }
             steps {
-                sh 'sudo docker run -d --name petclinic -p 8080:8080 petclinic:1.0'
+                sh 'sudo docker run -d --name petclinic -p 8080:8080 $ECR_URL/$ECR_NAME:latest'
             }
         }
     }
