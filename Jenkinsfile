@@ -15,6 +15,12 @@ pipeline {
         choice choices: ['Maven', 'Docker'], description: 'Build step to run', name: 'buildstep'
     }
 
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID') //Uses the credentials as value of the variable
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY') //Uses the credentials as value of the variable
+        AWS_DEFAULT_REGION = "us-east-1" //Allows to define the default AWS region if in the TF config is not declared
+    }
+
     stages {
         stage('Checkout SCM') {
             when {
