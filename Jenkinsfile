@@ -63,7 +63,7 @@ pipeline {
                 expression { params.buildstep == 'Docker' }
             }
             steps {
-                sh 'sudo apt install jq'
+                sh 'sudo apt install jq -y'
                 sh 'ECR_URL=$(aws ecr describe-repositories | jq -r ".repositories[0].repositoryUri" | cut -d \'/\' -f 1)'
                 sh 'echo $ECR_URL'
                 sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URL'
