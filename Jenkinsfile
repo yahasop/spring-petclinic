@@ -85,7 +85,7 @@ pipeline {
                     ECR_NAME="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryName)"
                     sudo docker rmi $ECR_NAME:latest
                     sudo docker rmi $ECR_URL/$ECR_NAME:latest
-                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin https://$ECR_URL
+                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URL
                     sudo docker build -t $ECR_NAME .
                     sudo docker images
                     sudo docker tag $ECR_NAME:latest $ECR_URL/$ECR_NAME:latest
