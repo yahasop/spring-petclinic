@@ -58,7 +58,6 @@ pipeline {
             }
         }
         */
-
         
         stage('Run scipt') {
             when {
