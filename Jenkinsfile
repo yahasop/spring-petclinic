@@ -78,12 +78,9 @@ pipeline {
                 expression { params.buildstep == 'Docker' }
             }
             steps {
-
-                sh 'echo "export ECR_URL="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d \'/\' -f 1)"" >> /home/$USER/.bashrc'
-                sh 'echo "export ECR_NAME="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryName)"" >> /home/$USER/.bashrc'
-                sh '. /home/$USER/.bashrc'
                 sh '''
                     sudo usermod -aG docker jenkins
+                    sudo usermdo -aG docker $USER
                     sudo newgrp docker
                     ECR_URL="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d \'/\' -f 1)"
                     ECR_NAME="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryName)"
