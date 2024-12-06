@@ -59,20 +59,18 @@ pipeline {
         }
         */
 
-        /*
-        stage('Get ECRConfig') {
+        
+        stage('Run scipt') {
             when {
                 expression { params.buildstep == 'Docker' }
             }
             steps {
-                sh '''
-                    echo $ECR_URL
-                    
-                '''
+                sh 'chmod u+x docker-image.sh'
+                sh './docker-image.sh'
             }
         }
-        */
-
+        
+        /*
         stage('Dockerizing') {
             when {
                 expression { params.buildstep == 'Docker' }
@@ -92,6 +90,7 @@ pipeline {
                 '''
             }
         }
+        */
 
         stage('Deploy') {
             when {
