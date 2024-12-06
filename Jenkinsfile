@@ -64,8 +64,8 @@ pipeline {
                 expression { params.buildstep == 'Docker' }
             }
             steps {
-                sh 'chmod u+x docker-image.sh'
-                sh './docker-image.sh'
+                sh 'chmod u+x docker-pushing-image.sh'
+                sh './docker-pushing-image.sh'
             }
         }
         
@@ -96,7 +96,8 @@ pipeline {
                 expression { params.buildstep == 'Docker' }
             }
             steps {
-                sh 'sudo docker run -d --name petclinic -p 8080:8080 $ECR_URL/$ECR_NAME:latest'
+                sh 'chmod u+x docker-pulling-image.sh'
+                sh './docker-pulling-image.sh'
             }
         }
     }
