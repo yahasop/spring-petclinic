@@ -81,7 +81,7 @@ pipeline {
                 sh 'sudo usermod -aG docker jenkins'
                 sh 'sudo newgrp docker'
                 sh 'echo "export ECR_URL="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d \'/\' -f 1)"" >> /home/$USER/.bashrc'
-                sh '"export ECR_NAME="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryName)"" >> /home/$USER/.bashrc'
+                sh 'echo "export ECR_NAME="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryName)"" >> /home/$USER/.bashrc'
                 sh '. /home/$USER/.bashrc'
                 sh '''
                     //ECR_URL="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d \'/\' -f 1)"
