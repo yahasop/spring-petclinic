@@ -78,12 +78,13 @@ pipeline {
                 expression { params.buildstep == 'Docker' }
             }
             steps {
-                sh 'sudo usermod -aG docker jenkins'
-                sh 'sudo newgrp docker'
+
                 sh 'echo "export ECR_URL="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d \'/\' -f 1)"" >> /home/$USER/.bashrc'
                 sh 'echo "export ECR_NAME="$(aws ecr describe-repositories | jq -r .repositories[0].repositoryName)"" >> /home/$USER/.bashrc'
                 sh '. /home/$USER/.bashrc'
                 sh '''
+                    sudo usermod -aG docker jenkins
+                    sudo newgrp docker
                     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URL
                     docker build -t $ECR_NAME .
                     docker tag $ECR_NAME:latest $ECR_URL/$ECR_NAME:latest
