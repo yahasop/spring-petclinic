@@ -38,7 +38,7 @@ pipeline {
                 expression { params.buildstep == 'Maven' }
             }
             steps {
-                sh "git tag v1.${gitCommit}"
+                sh 'git tag v1.0.0'
             }
         }
 
