@@ -5,6 +5,7 @@ pipeline {
 
     tools {
         maven 'maven-jenkins'
+        git 'Default'
     }
     /*
     triggers {
