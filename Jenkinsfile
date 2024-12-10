@@ -32,15 +32,6 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/yahasop/spring-petclinic.git'
             }
         }
-        
-        stage('Tag Versioning') {
-            when {
-                expression { params.buildstep == 'Maven' }
-            }
-            steps {
-                sh 'git tag v1.0.0'
-            }
-        }
 
         stage('Package(Test/Build)') {
             when {
