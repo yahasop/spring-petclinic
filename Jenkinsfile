@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'app-agent'
+        label 'agent2'
     }
 
     tools {
@@ -69,6 +69,7 @@ pipeline {
             }
         }
         
+        /*
         stage('Pulling and Deploy Image') {
             when {
                 expression { params.buildstep == 'Docker' }
@@ -78,5 +79,6 @@ pipeline {
                 sh './docker-pulling-image.sh'
             }
         }
+        */
     }
 }
