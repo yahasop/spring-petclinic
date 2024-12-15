@@ -9,4 +9,4 @@
         mode: u+x
     
     - name: Executing the script
-      script: /tmp/ansible/docker-pulling-image.sh
+      script: /tmp/docker-pulling-image.sh
