@@ -53,7 +53,8 @@ pipeline {
             }
             */
             steps {
-                sh 'sshpass -p ubuntu ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/main.yml -u ubuntu -k'
+                sh 'sshpass -p ubuntu ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/add-sudoers.yml -u ubuntu -k'
+                sh 'ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/main.yml'
                 //sh 'chmod u+x docker-pulling-image.sh'
                 //sh './docker-pulling-image.sh'
             }
