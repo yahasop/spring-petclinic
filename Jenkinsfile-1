@@ -18,7 +18,7 @@ pipeline {
                     def releases = listGitHubReleases(
                         credentialId: 'github-token', 
                         includeDrafts: false, 
-                        repository: 'yahasop/jenkins-example-docker', 
+                        repository: 'yahasop/spring-petclinic', 
                         sortAscending: false, 
                         tagNamePattern: '1.'
                     )
@@ -26,13 +26,13 @@ pipeline {
                 }
             }
         }
-
+        /*
         stage('GetInstancesIP') {
             steps {
                 sh 'sudo cp /home/ubuntu/app/workspace/provision-infrastructure/instances-ip.txt ./instances-ip.txt'
             }
         }
-        /*
+        
         stage('Running Ansible (Preparation)') {
             when {
                 expression { params.tfstep == 'Ansible' }
