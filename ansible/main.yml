@@ -4,7 +4,7 @@
   tasks:
     - name: Copy script
       copy:
-        src: p/home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
+        src: /home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
         dest: /tmp/docker-pulling-image.sh
         mode: u+x
     
