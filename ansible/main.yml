@@ -4,7 +4,8 @@
 
   tasks:
     - name: Changing permissions to script
-      cmd: chmod u+x /home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
+      file: /home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
+      mode: u+x
     
     - name: Executing the script
-      cmd: /home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
+      script: /home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
