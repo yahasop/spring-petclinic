@@ -1,9 +1,13 @@
 - hosts: appserver
   become: yes
   
-  tasks:
-    - name: Changing permissions to script
-      shell: chmod u+x /home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
+
+  #tasks:
+  #  - name: Changing permissions to script
+  #    shell: chmod u+x /home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
     
-    - name: Executing the script
-      shell: /home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
+  #  - name: Executing the script
+  #    shell: /home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
+  tasks:
+    - name: ping hosts
+      shell: pwd
