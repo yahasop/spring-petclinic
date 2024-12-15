@@ -3,7 +3,7 @@
   
   tasks:
     - name: Changing permissions to script
-      shell: chmod u+x ../docker-pulling-image.sh
+      shell: chmod u+x ./docker-pulling-image.sh
     
     - name: Executing the script
-      shell: ../docker-pulling-image.sh
+      shell: ./docker-pulling-image.sh
