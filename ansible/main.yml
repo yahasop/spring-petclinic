@@ -2,11 +2,10 @@
   become: yes
   
   tasks:
-    - name: Copy script
-      copy:
-        src: /home/ubuntu/jenkins/workspace/deploying-petclinic/ansible/docker-pulling-image.sh
-        dest: /tmp/docker-pulling-image.sh
+    - name: Change mode
+      file:
+        path: /home/ubuntu/jenkins/workspace/petclinic-app/ansible/docker-pulling-image.sh
         mode: u+x
     
     - name: Executing the script
-      script: /tmp/docker-pulling-image.sh
+      script: /home/ubuntu/jenkins/workspace/petclinic-app/ansible/docker-pulling-image.sh
