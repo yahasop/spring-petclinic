@@ -5,6 +5,12 @@ pipeline {
     
     stages {
         
+        stage('Checkout SCM') {
+            steps {
+                git branch: 'main', url: 'https://github.com/yahasop/spring-petclinic.git'
+            }
+        }
+
         stage('CreateGHRelease') {
             steps {
                 createGitHubRelease commitish: 'main', credentialId: 'github-token', draft: false, prerelease: false, repository: 'yahasop/spring-petclinic', tag: "1.0.${env.BUILD_NUMBER}"
@@ -53,14 +59,14 @@ pipeline {
             }
             */
             steps {
-                sh 'sshpass -p ubuntu ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/add-sudoers.yml -u ubuntu -k'
+                sh 'sshpass -p ubuntu ansible-playbook -i ./ansible/hosts ./ansible/add-sudoers.yml -u ubuntu -k'
                 //sh 'chmod u+x docker-pulling-image.sh'
                 //sh './docker-pulling-image.sh'
             }
         }
         stage('Deploying'){
             steps {
-                sh 'ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/main.yml'
+                sh 'ansible-playbook -i ./ansible/hosts ./ansible/main.yml'
             }
         }
     }
