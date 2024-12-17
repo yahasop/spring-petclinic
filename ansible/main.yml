@@ -2,5 +2,29 @@
   become: yes
   
   tasks:
-    - name: Executing the script
-      script: /home/ubuntu/jenkins/workspace/petclinic-app/ansible/docker-pulling-image.sh
+#    - name: Executing the script
+#      script: /home/ubuntu/jenkins/workspace/petclinic-app/ansible/docker-pulling-image.sh
+
+    - name: Get ECR token
+      shell: "aws ecr get-login-password --region us-east-1"
+      register: ecr_token
+
+    - name: Get ECR Registry URL
+      shell: "aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d '/' -f 1"
+      register: ecr_registry_url
+
+    - name: GET ECR Repo Name
+      shell: "aws ecr describe-repositories | jq -r .repositories[0].repositoryName"
+      register: ecr_repo_name
+
+    - name: Log into ECR registry
+      community.docker.docker_login:
+        registry_url: "{{ ecr_registry_url }}"
+        debug: yes
+        username: "AWS"
+        password: "{{ ecr_token.stdout }}"
+        reauthorize: yes
+    
+    - name: Pull container
+      community.docker.docker_image_pull:
+        name: "{{ ecr_registry_url }}/{{ ecr_repo_name }}"
