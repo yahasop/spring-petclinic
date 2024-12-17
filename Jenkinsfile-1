@@ -66,6 +66,7 @@ pipeline {
         }
         stage('Deploying'){
             steps {
+                /*
                 script {
                     //ECR_URL="$()"
                     //ECR_NAME="$()"
@@ -73,7 +74,7 @@ pipeline {
                     ECR_NAME = sh(returnStdout: true, script: 'aws ecr describe-repositories | jq -r .repositories[0].repositoryName').trim()
                     //currentBuild.displayName = "$CURRENT_BRANCH - $CURRENT_HASH"
                 }
-
+                */
                 sh 'ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/main.yml'
             }
         }
