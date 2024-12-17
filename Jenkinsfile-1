@@ -53,7 +53,7 @@ pipeline {
                     //currentBuild.displayName = "$CURRENT_BRANCH - $CURRENT_HASH"
                 }
                 */
-                withCredentials([string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AccessKeyID'), string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'SecretAccessKey')]) {
+                withCredentials([string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'), string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh 'ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/main.yml'
                 }
                 
