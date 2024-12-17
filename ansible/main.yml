@@ -2,11 +2,5 @@
   become: yes
   
   tasks:
-  
-  #  - name: Change mode
-  #    file:
-  #      path: /home/ubuntu/jenkins/workspace/petclinic-app/ansible/docker-pulling-image.sh
-  #      mode: u+x
-    
     - name: Executing the script
       script: /home/ubuntu/jenkins/workspace/petclinic-app/ansible/docker-pulling-image.sh
