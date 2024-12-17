@@ -60,7 +60,7 @@ pipeline {
             */
             steps {
                 sh 'sshpass -p ubuntu ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/add-sudoers.yml -u ubuntu -k'
-                sh 'aws configure --region us-east-1'
+                sh 'aws configure set region us-east-1'
                 //sh 'chmod u+x docker-pulling-image.sh'
                 //sh './docker-pulling-image.sh'
             }
