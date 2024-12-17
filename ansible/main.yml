@@ -13,7 +13,6 @@
         aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
         aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
 
-
     - name: Get ECR token
       shell: "aws ecr get-login-password --region us-east-1"
       register: ecr_token
