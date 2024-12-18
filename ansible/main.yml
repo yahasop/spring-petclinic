@@ -53,3 +53,5 @@
         name: petclinic
         state: started
         image: "{{ ecr_registry_url }}/my-ecr"
+        ports:
+        - "8080:8080"
