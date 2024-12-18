@@ -51,5 +51,5 @@
     - name: Container present
       community.docker.docker_container:
         name: petclinic
-        state: present
+        state: started
         image: "{{ ecr_registry_url }}/my-ecr"
