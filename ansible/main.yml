@@ -17,12 +17,12 @@
       ansible.builtin.pip:
         name: boto3
 
-    - name: Get instance profile info
-      amazon.aws.aws_caller_info:
-      register: aws_info
+#    - name: Get instance profile info
+#      amazon.aws.aws_caller_info:
+#      register: aws_info
 
-    - set_fact:
-        ecr_registry_url: "{{ aws_info.account }}.dkr.ecr.eu-west-1.amazonaws.com"
+#    - set_fact:
+#        ecr_registry_url: "{{ aws_info.account }}.dkr.ecr.eu-west-1.amazonaws.com"
 
 #    - name: Log in to Amazon ECR
 #      community.aws.ecr_login:
@@ -33,13 +33,13 @@
       shell: "aws ecr get-login-password --region us-east-1"
       register: ecr_token
 
-#    - name: Get ECR Registry URL
-#      shell: "aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d '/' -f 1"
-#      register: ecr_registry_url
+    - name: Get ECR Registry URL
+      shell: "aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d '/' -f 1"
+      register: ecr_registry_url
 
-#    - name: GET ECR Repo Name
-#      shell: "aws ecr describe-repositories | jq -r .repositories[0].repositoryName"
-#      register: ecr_repo_name
+    - name: GET ECR Repo Name
+      shell: "aws ecr describe-repositories | jq -r .repositories[0].repositoryName"
+      register: ecr_repo_name
 
     - name: Log into ECR registry
       community.docker.docker_login:
