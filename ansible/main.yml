@@ -9,6 +9,14 @@
         AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
         AWS_REGION: "{{ lookup('env', 'AWS_DEFAULT_REGION') }}"
     
+    - name: Insstall Pip
+      apt:
+        name: python3-pip
+
+    - name: Install Boto3
+      pip:
+        name: boto3
+    
     - name: Get instance profile info
       amazon.aws.aws_caller_info:
         aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
