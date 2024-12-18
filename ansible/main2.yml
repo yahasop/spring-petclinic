@@ -1,0 +1,57 @@
+- hosts: appserver
+  become: yes
+  
+  tasks:
+#    - name: Executing the script
+#      script: /home/ubuntu/jenkins/workspace/petclinic-app/ansible/docker-pulling-image.sh
+
+    - name: Export Keys
+      shell: "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID && export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
+
+#    - name: Install pip
+#      apt:
+#        name: python3-pip
+#        update_cache: yes
+
+#    - name: Install boto3 python package
+#      ansible.builtin.pip:
+#        name: boto3
+
+    - name: Get instance profile info
+      amazon.aws.aws_caller_info:
+        aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+        aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+        aws_region: "{{ lookup('env', 'AWS_DEFAULT_REGION')}}"
+      register: aws_info
+
+    - set_fact:
+        ecr_registry_url: "{{ aws_info.account }}.dkr.ecr.us-east-1.amazonaws.com"
+
+#    - name: Log in to Amazon ECR
+#      community.aws.ecr_login:
+#        aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+#        aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+
+    - name: Get ECR token
+      shell: "aws ecr get-login-password --region us-east-1"
+      register: ecr_token
+
+#    - name: Get ECR Registry URL
+#      shell: "aws ecr describe-repositories | jq -r .repositories[0].repositoryUri | cut -d '/' -f 1"
+#      register: ecr_registry_url
+
+#    - name: GET ECR Repo Name
+#      shell: "aws ecr describe-repositories | jq -r .repositories[0].repositoryName"
+#      register: ecr_repo_name
+
+    - name: Log into ECR registry
+      community.docker.docker_login:
+        registry_url: "{{ ecr_registry_url }}"
+        debug: yes
+        username: "AWS"
+        password: "{{ ecr_token.stdout }}"
+        reauthorize: yes
+    
+    - name: Pull container
+      community.docker.docker_image_pull:
+        name: "{{ ecr_registry_url }}/{{ ecr_repo_name }}"
