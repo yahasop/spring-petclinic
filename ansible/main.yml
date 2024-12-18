@@ -47,3 +47,9 @@
       community.docker.docker_image_pull:
         #name: "{{ ecr_registry_url }}/{{ ecr_repo_name }}"
         name: "{{ ecr_registry_url }}/my-ecr"
+
+    - name: Container present
+      community.docker.docker_container:
+        name: petclinic
+        state: present
+        image: "{{ ecr_registry_url }}/my-ecr"
