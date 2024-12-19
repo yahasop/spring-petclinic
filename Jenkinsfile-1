@@ -39,7 +39,7 @@ pipeline {
                 }
             }
         }
-        /*
+        
         stage('Package(Test/Build)') {
             steps {
                 sh 'mvn package -Dmaven.test.skip'
@@ -61,6 +61,6 @@ pipeline {
                     '''
             }
         }
-        */
+        
     }
 }
