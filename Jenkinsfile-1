@@ -10,12 +10,18 @@ pipeline {
     }
 
     stages {
+        stage('Checkout SCM') {
+            steps {
+                git branch: 'main', url: 'https://github.com/yahasop/spring-petclinic.git'
+            }
+        }
+
         stage('CreateGHRelease') {
             steps {
                 createGitHubRelease commitish: 'main', credentialId: 'github-token', draft: false, prerelease: false, repository: 'yahasop/spring-petclinic', tag: "1.0.${env.BUILD_NUMBER}"
             }
         }
-        
+
         stage('ListGHReleases') {
             steps {
                 //This uses the Github Release
@@ -28,12 +34,19 @@ pipeline {
                         tagNamePattern: '1.'
                     )
                     echo "Releases: ${releases[0]?.tagName}"
+
+                    writeFile file: 'release.txt', text: "${releases[0]?.tagName}"
                 }
+            }
+        }
+        /*
+        stage('Package(Test/Build)') {
+            steps {
+                sh 'mvn package -Dmaven.test.skip'
             }
         }
         
         stage('Pulling and Deploy Image') {
-
             steps {
                 sh 'sshpass -p ubuntu ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/add-sudoers.yml -u ubuntu -k'
             }
@@ -48,5 +61,6 @@ pipeline {
                     '''
             }
         }
+        */
     }
 }
