@@ -2,6 +2,11 @@ pipeline {
     agent {
         label 'agent2'
     }
+
+    tools {
+        maven 'maven-jenkins'
+        git 'Default'
+    }
     
     environment {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
