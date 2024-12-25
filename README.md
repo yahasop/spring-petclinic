@@ -1,99 +1,116 @@
-# Spring PetClinic Sample Application
+# Capstone Project - Application CI/CD
+
+Standalone repository to deploy some resources to test, build and deploy a sample Java application.
+
+## Introduction
+
+The purpose of this project is to demonstrate the use of several tools and also to integrate them and make them working together. This project tries to automatize almost all the flow from provisioning the resources to build the architecture the application will run on, to the automated testing, building and deployment of the application implementing always newer versions of it.
+Some of the tools that are being integrated in this project are:
+* Jenkins
+* Terraform
+* AWS (but not attached strictly to it)
+* Ansible
+* Docker
+* Git
+* Scripting (Bash/Python)
+* Linux
+* Nexus
+
+## Getting Started
+
+This repo covers the second part of the project which is the continuous integration and delivery of the application.
+
+First part: <br>
+https://github.com/yahasop/capstone-project
 
 
-## Understanding the Spring Petclinic application with a few diagrams
+### Jenkins Manual Configurations
 
+#### Plugins
+Dashboard > Manage Jenkins > Plugins > Available Plugins
+* Terraform
+* Ansible
+* AWS Credentials
+* Maven Integration
+* Github Integration
+* Paramaterized Trigger
+* Pipeline Stage View
+* Warnings
 
+#### Credentials
+Dashboard > Manage Jenkins > Credentials > System > Global Credentials > Add Credentials
+* AWS Access Key ID
+    * Kind: Secret text
+    * Scope: Global
+    * Secret: A valid account AWS Access Key ID
+    * ID: AWS_ACCESS_KEY_ID
+    * Description: Optional
+* AWS Secret Access Key
+    * Kind: Secret text
+    * Scope: Global
+    * Secret: A valid account AWS Secret Access Key
+    * ID: AWS_SECRET_ACCESS_KEY
+    * Description: Optional
+* Credentials for VM's
+    * Kind: Username with password
+    * Scope: Global
+    * Username: ubuntu
+    * Password: ubuntu
+    * ID: ubuntuCreds
+    * Description: Optional
 
-## Run Petclinic locally
+#### Tools
+Dashboard > Manage Jenkins > Tools (Need to install the plugins first)
+* Ansible as 'ansible-jenkins-linux' with tool home: /home/ubuntu/jenkins/tools and installed automatically with shell commands:
+    * sudo apt-add-repository ppa:ansible/ansible
+    * sudo apt update -y
+    * sudo apt install ansible -y
+* Terraform installed automatically with bintray.com 
+    * 'terraform-jenkins-linux' with version linux amd64 
+    * 'terraform-jenkins-mac' with version darwin amd64
+* Maven as 'maven-jenkins' and installed from Apache, version 3.9.9
 
-Spring Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) application built using [Maven](https://spring.io/guides/gs/maven/) or [Gradle](https://spring.io/guides/gs/gradle/). You can build a jar file and run it from the command line (it should work just as well with Java 17 or newer):
+#### Nodes
+Dashboard > Manage Jenkins > Nodes > New Node
+* Builtin node
+    * Number of executors: 2
+    * Labels: built-in
+    * Usage: Only builds jobs with label expressions matching this node
+* Node 'agent2'
+    * Name: agent2
+    * Number of executors: 2
+    * Remote root directory: /home/ubuntu/jenkins
+    * Labels: agent2
+    * Usage: As much as possible
+    * Launch method: Launch agents via SSH
+    * Host: `JenkinsAgentVM_PUBLICIP` (Provided after provision-agent pipeline is build)
+    * Credentials: ubuntuCreds
+    * Host Key Verification Strategy: Non verifying Verification Strategy (not recommended)
+    * Availability: Keep this agent online as much as possible
 
+#### Pipelines
+Dashboard > New Item > Pipeline
+* To provision Jenkins agent. Name: provision-agent
+    * Definition: Pipeline script from SCM
+    * Repository URL: This repo URL
+    * Credentials: none
+    * Branches to build: */agent
+    * Script path: Jenkinsfile
+* To provision all the resources to deploy the application. Name: provision-infrastructure
+    * Definition: Pipeline script from SCM
+    * Repository URL: This repo URL
+    * Credentials: none
+    * Branches to build: */main
+    * Script path: Jenkinsfile
 
-You can then access the Petclinic at <http://localhost:8080/>.
-
-Or you can run it from Maven directly using the Spring Boot Maven plugin. If you do this, it will pick up changes that you make in the project immediately (changes to Java source files require a compile as well - most people use an IDE for this):
-
-
-## Building a Container
-
-There is no `Dockerfile` in this project. (There is now. Change7 to test the WH) You can build a container image (if you have a docker daemon) using the Spring Boot build plugin:
-
-
-## In case you find a bug/suggested improvement for Spring Petclinic
-
-Our issue tracker is available [here](https://github.com/spring-projects/spring-petclinic/issues).
-
-## Database configuration
-
-In its default configuration, Petclinic uses an in-memory database (H2) which
-gets populated at startup with data. The h2 console is exposed at `http://localhost:8080/h2-console`,
-and it is possible to inspect the content of the database using the `jdbc:h2:mem:<uuid>` URL. The UUID is printed at startup to the console.
-
-You can start MySQL or PostgreSQL locally with whatever installer works for your OS or use docker:
-
-Further documentation is provided for [MySQL](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/resources/db/mysql/petclinic_db_setup_mysql.txt)
-and [PostgreSQL](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/resources/db/postgres/petclinic_db_setup_postgres.txt).
-
-Instead of vanilla `docker` you can also use the provided `docker-compose.yml` file to start the database containers. Each one has a profile just like the Spring profile:
-
-## Test Applications
-
-At development time we recommend you use the test applications set up as `main()` methods in `PetClinicIntegrationTests` (using the default H2 database and also adding Spring Boot Devtools), `MySqlTestApplication` and `PostgresIntegrationTests`. These are set up so that you can run the apps in your IDE to get fast feedback and also run the same classes as integration tests against the respective database. The MySql integration tests use Testcontainers to start the database in a Docker container, and the Postgres tests use Docker Compose to do the same thing.
-
-## Compiling the CSS
-
-There is a `petclinic.css` in `src/main/resources/static/resources/css`. It was generated from the `petclinic.scss` source, combined with the [Bootstrap](https://getbootstrap.com/) library. If you make changes to the `scss`, or upgrade Bootstrap, you will need to re-compile the CSS resources using the Maven profile "css", i.e. `./mvnw package -P css`. There is no build profile for Gradle to compile the CSS.
-
-## Working with Petclinic in your IDE
-
-### Prerequisites
-
-The following items should be installed in your system:
-
-- Java 17 or newer (full JDK, not a JRE)
-- [Git command line tool](https://help.github.com/articles/set-up-git)
-- Your preferred IDE
-  - Eclipse with the m2e plugin. Note: when m2e is available, there is an m2 icon in `Help -> About` dialog. If m2e is
-  not there, follow the install process [here](https://www.eclipse.org/m2e/)
-  - [Spring Tools Suite](https://spring.io/tools) (STS)
-  - [IntelliJ IDEA](https://www.jetbrains.com/idea/)
-  - [VS Code](https://code.visualstudio.com)
-
-### Steps
-
-## Looking for something in particular?
-
-|Spring Boot Configuration | Class or Java property files  |
-|--------------------------|---|
-|The Main Class | [PetClinicApplication](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java) |
-|Properties Files | [application.properties](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/resources) |
-|Caching | [CacheConfiguration](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/java/org/springframework/samples/petclinic/system/CacheConfiguration.java) |
-
-## Interesting Spring Petclinic branches and forks
-
-The Spring Petclinic "main" branch in the [spring-projects](https://github.com/spring-projects/spring-petclinic)
-GitHub org is the "canonical" implementation based on Spring Boot and Thymeleaf. There are
-[quite a few forks](https://spring-petclinic.github.io/docs/forks.html) in the GitHub org
-[spring-petclinic](https://github.com/spring-petclinic). If you are interested in using a different technology stack to implement the Pet Clinic, please join the community there.
-
-## Interaction with other open-source projects
-
-One of the best parts about working on the Spring Petclinic application is that we have the opportunity to work in direct contact with many Open Source projects. We found bugs/suggested improvements on various topics such as Spring, Spring Data, Bean Validation and even Eclipse! In many cases, they've been fixed/implemented in just a few days.
-Here is a list of them:
-
-| Name | Issue |
-|------|-------|
-| Spring JDBC: simplify usage of NamedParameterJdbcTemplate | [SPR-10256](https://jira.springsource.org/browse/SPR-10256) and [SPR-10257](https://jira.springsource.org/browse/SPR-10257) |
-| Bean Validation / Hibernate Validator: simplify Maven dependencies and backward compatibility |[HV-790](https://hibernate.atlassian.net/browse/HV-790) and [HV-792](https://hibernate.atlassian.net/browse/HV-792) |
-| Spring Data: provide more flexibility when working with JPQL queries | [DATAJPA-292](https://jira.springsource.org/browse/DATAJPA-292) |
-
-## Contributing
-
-The [issue tracker](https://github.com/spring-projects/spring-petclinic/issues) is the preferred channel for bug reports, feature requests and submitting pull requests.
-
-For pull requests, editor preferences are available in the [editor config](.editorconfig) for easy use in common text editors. Read more and download plugins at <https://editorconfig.org>. If you have not previously done so, please fill out and submit the [Contributor License Agreement](https://cla.pivotal.io/sign/spring).
-
-## License
-
-The Spring PetClinic sample application is released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+## Executing pipelines
+The intention of this project is to automate almost everything that can be automatized. In this scenario only one manual step needs to be performed.
+When the first pipeline is build, the console output will provide us the IP address of the Jenkins Agent. This IP needs to be put on the node configuration for 'agent2' in the host field
+Some other semi-manual steps are the ones within the pipelines. These pipelines are parameterized and depending on which option is selected, it'll run specific steps.
+* The povision-agent pipeline have two parameters:
+    * Apply: Runs all the necessary steps until the resources are provisioned
+    * Destroy: Runs a deprovisioning of the infrastructure based on the Terraform state
+* The provision-infrastructure pipeline have three parameters
+    * Apply: Runs all the necessary steps until the resources are provisioned
+    * Destroy: Runs a deprovisioning of the infrastructure based on the Terraform state
+    * Ansible: Runs the Ansible playbooks once the resources are provisioned
