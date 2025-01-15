@@ -50,14 +50,6 @@ pipeline {
                 recordIssues sourceCodeRetention: 'LAST_BUILD', tools: [pmdParser(), checkStyle()]
             }
         }
-        
-        /*
-        stage('Archiving artifacts') {
-            steps {
-                archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
-            }
-        }
-        */
 
         stage('Build and Push Image') {
             when {
@@ -68,17 +60,5 @@ pipeline {
                 sh './docker-pushing-image.sh'
             }
         }
-        
-        /*
-        stage('Pulling and Deploy Image') {
-            when {
-                expression { params.buildstep == 'Docker' }
-            }
-            steps {
-                sh 'chmod u+x docker-pulling-image.sh'
-                sh './docker-pulling-image.sh'
-            }
-        }
-        */
     }
 }
