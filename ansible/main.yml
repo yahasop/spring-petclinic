@@ -49,15 +49,19 @@
         username: "AWS"
         password: "{{ ecr_token.stdout }}"
         reauthorize: yes
+
+    - name: Read the tag
+      ansible.builtin.command: cat ../release.txt
+      register: release
     
-    - name: Pull container
+    - name: Pull image
       community.docker.docker_image_pull:
-        name: "{{ ecr_registry_url }}/my-ecr"
+        name: "{{ ecr_registry_url }}/my-ecr:{{ release }}"
 
     - name: Container present
       community.docker.docker_container:
         name: petclinic
         state: started
-        image: "{{ ecr_registry_url }}/my-ecr"
+        image: "{{ ecr_registry_url }}/my-ecr:{{ release }}"
         ports:
         - "8080:8080"
