@@ -1,6 +1,9 @@
 - hosts: appserver
   become: yes
   
+  vars:
+    release: "{{ lookup('file', '../release.txt') }}"
+
   tasks:
     - name: Set AWS Credentials
       set_fact:
@@ -50,10 +53,6 @@
         password: "{{ ecr_token.stdout }}"
         reauthorize: yes
 
-    - name: Read the tag
-      ansible.builtin.command: cat ../release.txt
-      register: release
-    
     - name: Pull image
       community.docker.docker_image_pull:
         name: "{{ ecr_registry_url }}/my-ecr:{{ release }}"
