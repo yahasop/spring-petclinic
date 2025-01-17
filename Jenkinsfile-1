@@ -8,6 +8,10 @@ pipeline {
         git 'Default'
     }
     
+    parameters {
+        choice choices: ['Delivery', 'Deploy'], description: 'Build step to run', name: 'cicdstep'
+    }
+
     environment {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
@@ -16,18 +20,27 @@ pipeline {
 
     stages {
         stage('Checkout SCM') {
+            when {
+                expression { params.cicdstep == 'Delivery' || params.cicdstep == 'Deploy' }
+            }
             steps {
                 git branch: 'main', url: 'https://github.com/yahasop/spring-petclinic.git'
             }
         }
 
         stage('CreateGHRelease') {
+            when {
+                expression { params.cicdstep == 'Delivery' }
+            }
             steps {
                 createGitHubRelease commitish: 'main', credentialId: 'github-token', draft: false, prerelease: false, repository: 'yahasop/spring-petclinic', tag: "1.0.${env.BUILD_NUMBER}"
             }
         }
 
         stage('ListGHReleases') {
+            when {
+                expression { params.cicdstep == 'Delivery' }
+            }
             steps {
                 //This uses the Github Release
                 script {
@@ -46,17 +59,39 @@ pipeline {
         }
         
         stage('Package(Test/Build)') {
+            when {
+                expression { params.cicdstep == 'Delivery' }
+            }
+
             steps {
                 sh 'mvn package -Dmaven.test.skip'
             }
         }
         
-        stage('Pulling and Deploy Image') {
+         stage('Building/Pushing Image') {
+            when {
+                expression { params.cicdstep == 'Delivery' }
+            }
+
+            steps {
+                sh 'chmod u+x docker-pushing-image-tag.sh'
+                sh './docker-pushing-image-tag.sh'
+            }
+        }
+
+        stage('Preparing Deploying') {
+            when {
+                expression { params.cicdstep == 'Deploy' }
+            }
             steps {
                 sh 'sshpass -p ubuntu ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/add-sudoers.yml -u ubuntu -k'
             }
         }
+
         stage('Deploying'){
+            when {
+                expression { params.cicdstep == 'Deploy' }
+            }
             steps {
                     sh '''
                         ansible-playbook -i /home/ubuntu/jenkins/workspace/provision-infrastructure/ansible/hosts ./ansible/main.yml \
