@@ -48,10 +48,10 @@
     - name: Log into ECR registry
       community.docker.docker_login:
         registry_url: "{{ ecr_registry_url }}"
-        debug: yes
+        debug: true
         username: "AWS"
         password: "{{ ecr_token.stdout }}"
-        reauthorize: yes
+        reauthorize: true #Forces reauthorization, refreshing existing authentication methods
 
     - name: Pull image
       community.docker.docker_image_pull:
