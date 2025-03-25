@@ -30,4 +30,4 @@ stages:
         mavenAuthenticateFeed: false
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
-        goals: package
+        goals: 'clean package'
