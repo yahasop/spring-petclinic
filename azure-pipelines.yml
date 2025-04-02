@@ -24,7 +24,9 @@ stages:
       inputs:
         versionSpec: '17'
         jdkArchitectureOption: 'x64'
-        jdkSourceOption: 'AzureStorage'
+        jdkSourceOption: 'PreInstalled'
+    - script: java -version
+      displayName: Check Java Version
     - task: Maven@4
       inputs:
         mavenPomFile: 'pom.xml'
