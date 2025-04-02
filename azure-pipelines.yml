@@ -18,13 +18,11 @@ stages:
   - job: Build
     displayName: Build
     pool:
-      vmImage: ubuntu-latest
+      vmImage: ubuntu-22.04
     steps:    
     - task: JavaToolInstaller@0
       inputs:
         versionSpec: '17'
-        jdkArchitectureOption: 'x64'
-        jdkSourceOption: 'PreInstalled'
     - task: Maven@4
       inputs:
         mavenPomFile: 'pom.xml'
