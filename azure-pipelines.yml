@@ -37,4 +37,4 @@ stages:
         mavenAuthenticateFeed: false
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
-        goals: 'clean package -U -DskipTests'
+        goals: 'clean package -DskipTests'
