@@ -23,6 +23,7 @@ stages:
     - task: JavaToolInstaller@0
       inputs:
         versionSpec: '17'
+        jdkArchitectureOption: 'x64'
     - task: Maven@4
       inputs:
         mavenPomFile: 'pom.xml'
