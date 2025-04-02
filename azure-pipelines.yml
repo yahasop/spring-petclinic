@@ -38,3 +38,7 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
         goals: 'clean package -DskipTests'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: 'target'
+        artifactName: 'drop'
