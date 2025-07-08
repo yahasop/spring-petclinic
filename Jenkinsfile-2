@@ -1,0 +1,26 @@
+pipeline {
+    agent {
+        label 'built-in'
+    }
+
+    tools {
+        maven 'maven-jenkins'
+        git 'Default'
+    }
+
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                git branch: 'main', url: 'https://github.com/yahasop/spring-petclinic.git'
+            }
+        }
+        
+        stage('Package(Test/Build)') {
+            steps {
+                withSonarQubeEnv(credentialsId: 'sonarq-token') {
+                    sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=sonar-maven -Dsonar.projectName='sonar-maven'"
+                }
+            }
+        }
+    }
+}
