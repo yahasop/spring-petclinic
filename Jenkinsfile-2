@@ -17,7 +17,7 @@ pipeline {
         
         stage('Package(Test/Build)') {
             steps {
-                withSonarQubeEnv(credentialsId: 'sonarq-token') {
+                withSonarQubeEnv(installationName: 'sonar-scanner' credentialsId: 'sonarq-token') {
                     sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=sonar-maven -Dsonar.projectName='sonar-maven'"
                 }
             }
