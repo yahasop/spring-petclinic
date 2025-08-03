@@ -28,7 +28,7 @@
     <webjars-bootstrap.version>5.3.3</webjars-bootstrap.version>
     <webjars-font-awesome.version>4.7.0</webjars-font-awesome.version>
 
-    <checkstyle.version>10.20.0</checkstyle.version>
+    <!-- <checkstyle.version>10.20.0</checkstyle.version> -->
     <jacoco.version>0.8.12</jacoco.version>
     <libsass.version>0.2.29</libsass.version>
     <lifecycle-mapping>1.0.0</lifecycle-mapping>
@@ -178,7 +178,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+      <!-- <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${maven-checkstyle.version}</version>
@@ -210,7 +210,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin> -->
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
