@@ -1,5 +1,5 @@
 #!/bin/bash
-
+NEW="new"
 LINES=()
 
 while IFS= read -ra line; do
