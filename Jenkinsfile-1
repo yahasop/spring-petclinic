@@ -33,7 +33,12 @@ pipeline {
                 expression { params.cicdstep == 'Delivery' }
             }
             steps {
-                createGitHubRelease commitish: 'main', credentialId: 'github-token', draft: false, prerelease: false, repository: 'yahasop/spring-petclinic', tag: "1.0.${env.BUILD_NUMBER}"
+                script{
+                    def now = new Date()
+                    def formattedDate = now.format('yyyy-MM-dd HH:mm')
+                    createGitHubRelease commitish: 'main', credentialId: 'github-token', draft: false, prerelease: false, repository: 'yahasop/spring-petclinic', tag: "${formattedDate}" //1.0.${env.BUILD_NUMBER}
+                }
+                
             }
         }
 
