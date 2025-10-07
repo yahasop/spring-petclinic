@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script{
                     def now = new Date()
-                    def formattedDate = now.format('yyyy-MM-dd HH:mm')
+                    def formattedDate = now.format('yyyyMMdd-HHmm')
                     createGitHubRelease commitish: 'main', credentialId: 'github-token', draft: false, prerelease: false, repository: 'yahasop/spring-petclinic', tag: "${formattedDate}" //1.0.${env.BUILD_NUMBER}
                 }
                 
