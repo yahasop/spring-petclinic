@@ -35,16 +35,12 @@
       set_fact:
         ecr_registry_url: "{{ aws_info.account }}.dkr.ecr.us-east-1.amazonaws.com"
 
-    #- name: Get ECR token
-    #  shell: "aws ecr get-login-password --region us-east-1"
-    #  environment:
-    #    AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
-    #    AWS_SECRET_ACCESS_KEY: "{{ AWS_SECRET_ACCESS_KEY }}"
-    #  register: ecr_token
-
-    - name: Get ECR authentication facts
-      community.aws.ecr_login_facts:
-      register: ecr_login_facts
+    - name: Get ECR token
+      shell: "aws ecr get-login-password --region us-east-1"
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
+        AWS_SECRET_ACCESS_KEY: "{{ AWS_SECRET_ACCESS_KEY }}"
+      register: ecr_token
 
     - name: Get ECR Repo Name
       shell: "aws ecr describe-repositories | jq -r .repositories[0].repositoryName"
@@ -58,10 +54,8 @@
       community.docker.docker_login:
         registry_url: "{{ ecr_registry_url }}"
         debug: true
-        username: "{{ ecr_login_facts.user }}"
-        #username: "AWS"
+        username: "AWS"
         password: "{{ ecr_token.stdout }}"
-        password: "{{ ecr_login_facts.password }}"
         reauthorize: yes #Forces reauthorization, refreshing existing authentication methods
 
     - name: Pull image
